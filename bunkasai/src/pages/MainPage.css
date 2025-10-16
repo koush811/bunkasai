@@ -1,0 +1,13 @@
+.main-page {
+    padding: 20px; 
+}
+.slide {
+    display:flex;
+    flex-direction:column; 
+    align-items:center; gap:12px; 
+    background-color: black;
+}
+button { 
+    padding:8px 12px; 
+    cursor:pointer; 
+}
