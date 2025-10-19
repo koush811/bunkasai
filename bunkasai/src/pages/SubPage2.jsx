@@ -12,20 +12,20 @@ export default function SubPage2() {
     }, []);
   return (
     <>
-        <div className='SubPage'>
+          <div className='SubPage-header'>
+            <Link className="nav-link" to={ROUTERS.MAIN}>MainPageに戻る</Link>
+          </div>
+          <div className='SubPage-main'>
             <h1>Sub Page 2</h1>
             <div className="visit-count">訪問者数: {visits} 人</div>
-            <Link to={ROUTERS.MAIN}>Back</Link>
-        
-          <div className='MainContents'>
+            <div className='MainContents'>
               <div className="sentence">
                 This is the content for Sub Page 2.
               </div>
               <img src="" alt="" />
+            </div>
           </div>
-        </div>
-    </>
-      
+        </>
   );
 
 }

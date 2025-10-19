@@ -2,6 +2,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    max-height: 100vh;
 }
 .main-page {
   padding:20px;
@@ -13,19 +14,22 @@
 
 .page-title {
   color: #222;
-  margin-bottom: 12px;
+  top: 3%;
 }
 
 .swiper-outer {
   position: relative;
   width: 100%;
-  height: 500px;
+  height: 480px;
+  top: 13px;
 }
 
 .swiper-box {
-  width: 100%;
+  width: 90%;
   height: 100%;
   background: #fff;
+  border: solid 3px #00a2d4; 
+  border-radius: 10px;
 }
 
 .slide-content {

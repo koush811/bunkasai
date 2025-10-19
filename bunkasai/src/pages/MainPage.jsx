@@ -64,7 +64,7 @@ export default function MainPage() {
                   navigate(ROUTERS.SUB1);
                 }}
               >
-                Go to SubPage 1
+                紹介ページへ
               </button>
             </div>
           </SwiperSlide>
@@ -79,7 +79,7 @@ export default function MainPage() {
                   navigate(ROUTERS.SUB2);
                 }}
               >
-                Go to SubPage 2
+                紹介ページへ
               </button>
             </div>
           </SwiperSlide>
@@ -94,7 +94,7 @@ export default function MainPage() {
                   navigate(ROUTERS.SUB3);
                 }}
               >
-                Go to SubPage 3
+                紹介ページへ
               </button>
             </div>
           </SwiperSlide>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>オセロゲームだよー</title>
+</head>
+<body>
+    <main>
+  <div class="setumei">
+    <h1>オセロ</h1>
+  </div>
+  <div class="board-area">
+    <div id="stage" class="stage"></div>
+    <div class="side-info">
+      <div class="turn">ターン: <span id="turn">黒</span></div>
+      <div class="count">
+        <span id="blackCount">黒: 2</span>
+        <span id="whiteCount">白: 2</span>
+      </div>
+      <div class="btn">
+        <button id="resetBtn">リセット</button>
+        <button id="passBtn">パス</button>
+      </div>
+      <div id="masuhantei"></div>
+      
+    </div>
+  </div>
+  <template id="masutemplate">
+    <div class="masu"><div class="stone"></div></div>
+  </template>
+    
+  </div>
+</main>
+<footer>
+  <div id="clearwindow" style="display: none;">
+    <div class="end">
+      <div class="kekka" id="kekka"></div>
+      <div class="end-count">
+        <div id="end-black"></div>
+        <div id="end-white"></div>
+      </div>
+      <button class="restart" onclick="restart()">もう一度遊ぶ</button>
+    </div>
+  </div>
+  <div id="clearstart" style="display: flex;">
+    <div class="start">
+      <div>ボタンを押すとスタート</div>
+      <button class="startbtn" onclick="start()">スタート</button>
+    </div>
+  </div>
+</footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

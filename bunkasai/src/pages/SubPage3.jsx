@@ -1,4 +1,3 @@
-// ...existing code...
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import './SubPage.css';
@@ -14,20 +13,19 @@ export default function SubPage3() {
 
   return (
     <>
-      <div className='SubPage'>
-        <h1>Sub Page 3</h1>
-        <div className="visit-count">訪問者数: {visits} 人</div>
-        <Link to={ROUTERS.MAIN}>Back</Link>
-        <div className='MainContents'>
-          <div className="sentence">
-            This is the content for Sub Page 3.
+          <div className='SubPage-header'>
+            <Link className="nav-link" to={ROUTERS.MAIN}>MainPageに戻る</Link>
           </div>
-          <img src="" alt="" />
-          <a href=""></a>
-          <button></button>
-          <div></div>
-        </div>
-      </div>
-    </>
+          <div className='SubPage-main'>
+            <h1>Sub Page 3</h1>
+            <div className="visit-count">訪問者数: {visits} 人</div>
+            <div className='MainContents'>
+              <div className="sentence">
+                This is the content for Sub Page 3.
+              </div>
+              <img src="" alt="" />
+            </div>
+          </div>
+        </>
   );
 }
