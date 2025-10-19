@@ -69,3 +69,16 @@
 .control-btn:hover {
   opacity: 0.9;
 }
+
+.reset-btn {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  padding: 6px 10px;
+  background: #d9534f;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  z-index: 20;
+}
