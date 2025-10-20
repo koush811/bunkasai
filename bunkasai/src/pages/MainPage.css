@@ -1,0 +1,143 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100vh;
+}
+
+.main-page {
+  height: 100vh;
+  width: 100%;
+  padding: 20px;
+  background-color: #868181;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.page-title {
+  color: #222;
+  text-align: center;
+  top: 0;
+  margin: 30px;
+}
+
+.swiper-outer {
+  position: relative;
+  width: 100%;
+  max-width: 920px;
+  margin: 0 auto;
+  height: calc(100vh - 180px);
+  display: block;
+}
+
+.swiper-box {
+  width: 100%;
+  height: 100%;
+  background: #fff;
+  border: solid 3px #00a2d4;
+  border-radius: 10px;
+  overflow: visible;
+  overflow: hidden;
+}
+
+.swiper-wrapper, .swiper-slide {
+  position: relative;
+  z-index: 1;
+}
+
+.swiper-slide {
+  width: 100% !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.slide-content {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 12px;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+.slide-content > * {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 16px;
+}
+
+.nav-btn {
+  padding: 8px 12px;
+  cursor: pointer;
+  border: 1px solid #ccc;
+  background: #fff;
+  border-radius: 4px;
+  position: static !important;
+  align-self: center !important;
+  display: inline-block !important;
+  margin: 12px auto 0 !important;
+  width: auto !important;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.controls {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 12px;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  z-index: 99999;
+  pointer-events: auto;
+  padding: 6px 12px;
+  box-sizing: border-box;
+  background: transparent;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.controls .control-btn {
+  position: static !important;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  margin: 0 !important;
+  min-width: 48px;
+  padding: 8px 12px;
+  background: #0078d4;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+}
+
+.reset-btn {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 100000;
+  padding: 6px 10px;
+  background: #d9534f;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  width: auto;
+  margin: 10px;
+}

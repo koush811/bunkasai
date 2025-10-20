@@ -2,9 +2,10 @@ import React, { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
+import './MainPage.css';
 import { ROUTERS } from '../url/url';
 import { incrementVisit, resetAllVisits } from '../component/visit';
-import './swiper.css';
+
 
 export default function MainPage() {
   const navigate = useNavigate();
@@ -27,8 +28,9 @@ export default function MainPage() {
   };
 
   return (
+    <>
+    
     <div className="main-page">
-      <h1 className="page-title" style={{ display: 'flex', justifyContent: 'center' }}>Main Page</h1>
       <button
             className="reset-btn"
             onClick={() => {
@@ -39,6 +41,8 @@ export default function MainPage() {
           >
             Reset All
         </button>
+      <h1 className="page-title" style={{ display: 'flex', justifyContent: 'center' }}>Main Page</h1>
+      
       <div className="swiper-outer">
         <Swiper
           onSwiper={(swiper) => {
@@ -99,15 +103,15 @@ export default function MainPage() {
             </div>
           </SwiperSlide>
         </Swiper>
-
-        <div className="controls">
+      </div>
+      <div className="controls">
           <button className="control-btn" onClick={prev}>Prev</button>
           <button className="control-btn" onClick={() => goTo(0)}>1</button>
           <button className="control-btn" onClick={() => goTo(1)}>2</button>
           <button className="control-btn" onClick={() => goTo(2)}>3</button>
           <button className="control-btn" onClick={next}>Next</button>
         </div>
-      </div>
     </div>
+  </>
   );
 }
