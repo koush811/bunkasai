@@ -1,3 +1,8 @@
+:root {
+  --block-size: 24px;
+  --scale: 1;
+}
+
 * {
   padding: 0;
   margin: 0;
@@ -10,27 +15,30 @@ body {
   align-items: center;
   height: 100vh;
   background-color: #a9a9a9;
+  overflow: hidden;
 }
 
-/* ゲーム全体を中央配置する */
 #gameContainer {
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
+  transform-origin: top center;
+  transform: scale(var(--scale));
+  transition: transform 0.2s ease;
+  max-height: 100vh;
+  max-width: 100%;
 }
 
-/* キャンバス領域 */
 #gameCanvas {
   background: #000;
   border: 1px solid #fff;
   display: block;
-  margin: 20px auto;
+  max-width: 100%;
+  height: auto;
 }
 
-/* スコア・タイマー */
-#score,
-#timer {
+#score,#timer {
   position: relative;
   color: white;
   text-align: center;
@@ -38,47 +46,70 @@ body {
 
 #score {
   font-size: 2rem;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
 }
 
 #timer {
   font-size: 1.5rem;
-  margin-bottom: 20px;
+  margin-bottom: 5px;
 }
 
-/* ボタンエリア */
 .btn {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   margin-top: 15px;
-  padding: 10px 20px;
+  padding: 15px 20px;
   background-color: white;
   border-radius: 10px;
+  width: fit-content; 
+  min-width: 300px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
 }
+
 
 .click {
   display: flex;
-  justify-content: space-between;
-  gap: 10px;
+  justify-content: center;
+  gap: 15px;
   margin-bottom: 10px;
 }
 
 .click div {
   border: 1px solid black;
-  padding: 8px 15px;
-  border-radius: 5px;
+  padding: 8px 20px;
+  border-radius: 6px;
   cursor: pointer;
   background-color: #f5f5f5;
+  font-size: 0.9rem;
+  transition: background-color 0.2s ease, transform 0.1s ease;
 }
 
 .click div:hover {
   background-color: #ddd;
+  transform: scale(1.05);
 }
 
-/* ゲームメッセージ */
-#message,
-#message2 {
+.sliderArea {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.9rem;
+  color: #333;
+}
+
+.sliderArea input[type="number"],
+.sliderArea input[type="range"] {
+  margin-left: 5px;
+  border: 1px solid #aaa;
+  border-radius: 4px;
+  padding: 3px 5px;
+}
+
+#message,#message2 {
   position: absolute;
   z-index: 10;
   top: 40%;
@@ -92,7 +123,6 @@ body {
   border-radius: 10px;
 }
 
-/* ポーズ時のオーバーレイ */
 .pauseOverlay {
   position: absolute;
   top: 0;

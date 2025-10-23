@@ -7,39 +7,39 @@ const BLOCK_SIZE = 24;
 const LEFT_HOLD_WIDTH = 6;
 
 const mino = [
-  [[0,0,0,0],[1,1,1,1],[0,0,0,0],[0,0,0,0]], // I
-  [[1,1],[1,1]], // O
-  [[0,1,0],[1,1,1],[0,0,0]], // T
-  [[0,1,1],[1,1,0],[0,0,0]], // S
-  [[1,1,0],[0,1,1],[0,0,0]], // Z
-  [[1,0,0],[1,1,1],[0,0,0]], // J
-  [[0,0,1],[1,1,1],[0,0,0]]  // L
+  [[0, 0, 0, 0], [1, 1, 1, 1], [0, 0, 0, 0], [0, 0, 0, 0]], // I
+  [[1, 1], [1, 1]], // O
+  [[0, 1, 0], [1, 1, 1], [0, 0, 0]], // T
+  [[0, 1, 1], [1, 1, 0], [0, 0, 0]], // S
+  [[1, 1, 0], [0, 1, 1], [0, 0, 0]], // Z
+  [[1, 0, 0], [1, 1, 1], [0, 0, 0]], // J
+  [[0, 0, 1], [1, 1, 1], [0, 0, 0]]  // L
 ];
 
-const COLORS = ['cyan','yellow','purple','green','red','blue','orange'];
+const COLORS = ['cyan', 'yellow', 'purple', 'green', 'red', 'blue', 'orange'];
 
 const SRS_KICKS_I = [
-  [[0,0],[-2,0],[1,0],[-2,1],[1,-2]],
-  [[0,0],[-1,0],[2,0],[-1,-2],[2,1]],
-  [[0,0],[2,0],[-1,0],[2,-1],[-1,2]],
-  [[0,0],[1,0],[-2,0],[1,2],[-2,-1]]
+  [[0, 0], [-2, 0], [1, 0], [-2, 1], [1, -2]],
+  [[0, 0], [-1, 0], [2, 0], [-1, -2], [2, 1]],
+  [[0, 0], [2, 0], [-1, 0], [2, -1], [-1, 2]],
+  [[0, 0], [1, 0], [-2, 0], [1, 2], [-2, -1]]
 ];
 
 const SRS_KICKS_OTHERS = [
-  [[0,0],[-1,0],[-1,1],[0,-2],[-1,-2]],
-  [[0,0],[1,0],[1,-1],[0,2],[1,2]],
-  [[0,0],[1,0],[1,1],[0,-2],[1,-2]],
-  [[0,0],[-1,0],[-1,-1],[0,2],[-1,2]]
+  [[0, 0], [-1, 0], [-1, 1], [0, -2], [-1, -2]],
+  [[0, 0], [1, 0], [1, -1], [0, 2], [1, 2]],
+  [[0, 0], [1, 0], [1, 1], [0, -2], [1, -2]],
+  [[0, 0], [-1, 0], [-1, -1], [0, 2], [-1, 2]]
 ];
 
 function rotateByCenter(shape, cx, cy, isCCW = false) {
   const N = shape.length;
-  let newShape = Array.from({length: N}, () => Array(N).fill(0));
-  for(let y=0; y<N; y++){
-    for(let x=0; x<N; x++){
-      if(!shape[y][x]) continue;
-      let dx = x-cx, dy = y-cy, rx, ry;
-      if(!isCCW){
+  let newShape = Array.from({ length: N }, () => Array(N).fill(0));
+  for (let y = 0; y < N; y++) {
+    for (let x = 0; x < N; x++) {
+      if (!shape[y][x]) continue;
+      let dx = x - cx, dy = y - cy, rx, ry;
+      if (!isCCW) {
         rx = dy;
         ry = -dx;
       } else {
@@ -47,14 +47,14 @@ function rotateByCenter(shape, cx, cy, isCCW = false) {
         ry = dx;
       }
       let nx, ny;
-      if(N===4){
+      if (N === 4) {
         nx = Math.floor(cx + rx + 0.01);
         ny = Math.floor(cy + ry + 0.01);
       } else {
         nx = Math.round(cx + rx);
         ny = Math.round(cy + ry);
       }
-      if(ny>=0 && ny<N && nx>=0 && nx<N){
+      if (ny >= 0 && ny < N && nx >= 0 && nx < N) {
         newShape[ny][nx] = shape[y][x];
       }
     }
@@ -62,16 +62,16 @@ function rotateByCenter(shape, cx, cy, isCCW = false) {
   return newShape;
 }
 
-function rotate(shape, minoIndex){
-  if(minoIndex===0) return rotateByCenter(shape,1.5,1.5,false);
-  if(minoIndex===1) return shape.map(row=>row.slice());
-  return rotateByCenter(shape,1,1,false);
+function rotate(shape, minoIndex) {
+  if (minoIndex === 0) return rotateByCenter(shape, 1.5, 1.5, false);
+  if (minoIndex === 1) return shape.map(row => row.slice());
+  return rotateByCenter(shape, 1, 1, false);
 }
 
-function rotateCCW(shape, minoIndex){
-  if(minoIndex===0) return rotateByCenter(shape,1.5,1.5,true);
-  if(minoIndex===1) return shape.map(row=>row.slice());
-  return rotateByCenter(shape,1,1,true);
+function rotateCCW(shape, minoIndex) {
+  if (minoIndex === 0) return rotateByCenter(shape, 1.5, 1.5, true);
+  if (minoIndex === 1) return shape.map(row => row.slice());
+  return rotateByCenter(shape, 1, 1, true);
 }
 
 export default function TetrisGame() {
@@ -82,7 +82,7 @@ export default function TetrisGame() {
   const [isCleared, setIsCleared] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
 
-  const boardRef = useRef(Array.from({length: ROWS}, () => Array(COLS).fill(0)));
+  const boardRef = useRef(Array.from({ length: ROWS }, () => Array(COLS).fill(0)));
   const minoQueueRef = useRef([]);
   const currentRef = useRef({
     shape: null,
@@ -108,8 +108,8 @@ export default function TetrisGame() {
   const pauseElapsedRef = useRef(0);
 
   function shuffle(array) {
-    for(let i=array.length-1; i>0; i--) {
-      let j = Math.floor(Math.random()*(i+1));
+    for (let i = array.length - 1; i > 0; i--) {
+      let j = Math.floor(Math.random() * (i + 1));
       [array[i], array[j]] = [array[j], array[i]];
     }
     return array;
@@ -120,28 +120,42 @@ export default function TetrisGame() {
     minoQueueRef.current.push(...bag);
   }
 
-  function newTetromino(){
-    if(minoQueueRef.current.length===0) refillQueue();
+  function updateNextMino() {
+    if (minoQueueRef.current.length === 0) refillQueue();
+    const nextIdx = minoQueueRef.current[0];
+    const nextInfo = {
+      index: nextIdx,
+      shape: mino[nextIdx],
+      color: COLORS[nextIdx],
+    };
+    nextMinoRef.current = nextInfo;
+    draw();
+  }
+
+
+  function newTetromino() {
+    if (minoQueueRef.current.length === 0) refillQueue();
     const idx = minoQueueRef.current.shift();
     const shape = mino[idx];
     const color = COLORS[idx];
-    currentRef.current = {shape, color, x:3, y:0, rotation:0, index:idx, holdUsed:false};
-    if(minoQueueRef.current.length===0) refillQueue();
-    if(collision(currentRef.current.x,currentRef.current.y,currentRef.current.shape)){
+    currentRef.current = { shape, color, x: 3, y: 0, rotation: 0, index: idx, holdUsed: false };
+    updateNextMino();
+    if (minoQueueRef.current.length === 0) refillQueue();
+    if (collision(currentRef.current.x, currentRef.current.y, currentRef.current.shape)) {
       setIsGameOver(true);
+      isGameOverRef.current = true;
       clearInterval(gameIntervalRef.current);
       stopTimer();
     }
   }
-
-  function collision(nx, ny, shape){
+  function collision(nx, ny, shape) {
     const b = boardRef.current;
-    for(let y=0; y<shape.length; y++){
-      for(let x=0; x<shape[y].length; x++){
-        if(shape[y][x]){
+    for (let y = 0; y < shape.length; y++) {
+      for (let x = 0; x < shape[y].length; x++) {
+        if (shape[y][x]) {
           const px = nx + x, py = ny + y;
-          if(px<0 || px>=COLS || py>=ROWS) return true;
-          if(py>=0 && b[py][px]) return true;
+          if (px < 0 || px >= COLS || py >= ROWS) return true;
+          if (py >= 0 && b[py][px]) return true;
         }
       }
     }
@@ -149,142 +163,143 @@ export default function TetrisGame() {
   }
 
   // Merge current mino into board
-  function merge(){
+  function merge() {
     const b = boardRef.current;
-    const {shape, color, x, y} = currentRef.current;
-    for(let dy=0; dy<shape.length; dy++){
-      for(let dx=0; dx<shape[dy].length; dx++){
-        if(shape[dy][dx]){
-          const px = x+dx, py = y+dy;
-          if(py>=0) b[py][px] = color;
+    const { shape, color, x, y } = currentRef.current;
+    for (let dy = 0; dy < shape.length; dy++) {
+      for (let dx = 0; dx < shape[dy].length; dx++) {
+        if (shape[dy][dx]) {
+          const px = x + dx, py = y + dy;
+          if (py >= 0) b[py][px] = color;
         }
       }
     }
     updateScore(10);
   }
 
-  function clearLines(){
+  function clearLines() {
     let b = boardRef.current;
     let linesCleared = 0;
-    for(let y=ROWS-1; y>=0; y--){
-      if(b[y].every(cell=>cell!==0)){
-        b.splice(y,1);
+    for (let y = ROWS - 1; y >= 0; y--) {
+      if (b[y].every(cell => cell !== 0)) {
+        b.splice(y, 1);
         b.unshift(Array(COLS).fill(0));
         linesCleared++;
         y++;
       }
     }
-    if(linesCleared>0){
-      updateScore(linesCleared*100);
+    if (linesCleared > 0) {
+      updateScore(linesCleared * 100);
       checkClear();
     }
   }
 
- 
-  function checkClear(){
-    if(score >= maxScoreRef.current){
+
+  function checkClear() {
+    if (score >= maxScoreRef.current) {
       clearInterval(gameIntervalRef.current);
       setIsCleared(true);
       stopTimer();
     }
   }
 
-  function updateScore(add){
-    setScore(s=>{
-      const ns = s+add;
-      if(ns>=maxScoreRef.current) checkClear();
+  function updateScore(add) {
+    setScore(s => {
+      const ns = s + add;
+      if (ns >= maxScoreRef.current) checkClear();
       return ns;
     });
   }
 
   // Rotation with SRS kicks
-  function SRSRotate(shape, x, y, rotateFunc, kicks){
+  function SRSRotate(shape, x, y, rotateFunc, kicks) {
     const rotated = rotateFunc(shape);
-    for(let i=0; i<kicks.length; i++){
+    for (let i = 0; i < kicks.length; i++) {
       const [dx, dy] = kicks[i];
-      if(!collision(x+dx, y+dy, rotated)){
-        return {success:true, shape:rotated, x: x+dx, y: y+dy};
+      if (!collision(x + dx, y + dy, rotated)) {
+        return { success: true, shape: rotated, x: x + dx, y: y + dy };
       }
     }
-    return {success:false, shape, x, y};
+    return { success: false, shape, x, y };
   }
 
   // Draw functions
   const ctxRef = useRef(null);
 
-  function drawBlock(x,y,color){
+  function drawBlock(x, y, color) {
     const ctx = ctxRef.current;
-    if(!ctx) return;
+    if (!ctx) return;
     ctx.fillStyle = color;
-    ctx.fillRect((LEFT_HOLD_WIDTH + x)*BLOCK_SIZE, y*BLOCK_SIZE, BLOCK_SIZE-1, BLOCK_SIZE-1);
+    ctx.fillRect((LEFT_HOLD_WIDTH + x) * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE - 1, BLOCK_SIZE - 1);
   }
 
-  function draw(){
+  function draw() {
     const ctx = ctxRef.current;
-    if(!ctx) return;
-    ctx.clearRect(0,0, ctx.canvas.width, ctx.canvas.height);
+    if (!ctx) return;
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
     const b = boardRef.current;
-    for(let y=0; y<ROWS; y++){
-      for(let x=0; x<COLS; x++){
-        if(b[y][x]) drawBlock(x,y,b[y][x]);
-      }
-    }
-    const {shape, color, x, y} = currentRef.current;
-    for(let dy=0; dy<shape.length; dy++){
-      for(let dx=0; dx<shape[dy].length; dx++){
-        if(shape[dy][dx]) drawBlock(x+dx, y+dy, color);
+    for (let y = 0; y < ROWS; y++) {
+      for (let x = 0; x < COLS; x++) {
+        if (b[y][x]) drawBlock(x, y, b[y][x]);
       }
     }
 
-    // Draw grid lines
-    ctx.strokeStyle = 'rgba(126,126,126,1)';
-    ctx.lineWidth = 0.7;
-    for(let x=0; x<=COLS; x++){
-      ctx.beginPath();
-      ctx.moveTo((LEFT_HOLD_WIDTH+x)*BLOCK_SIZE,0);
-      ctx.lineTo((LEFT_HOLD_WIDTH+x)*BLOCK_SIZE, ROWS*BLOCK_SIZE);
-      ctx.stroke();
-    }
-    for(let y=0; y<=ROWS; y++){
-      ctx.beginPath();
-      ctx.moveTo(LEFT_HOLD_WIDTH*BLOCK_SIZE,y*BLOCK_SIZE);
-      ctx.lineTo((LEFT_HOLD_WIDTH+COLS)*BLOCK_SIZE,y*BLOCK_SIZE);
-      ctx.stroke();
+    const { shape, color, x, y } = currentRef.current;
+    for (let dy = 0; dy < shape.length; dy++) {
+      for (let dx = 0; dx < shape[dy].length; dx++) {
+        if (shape[dy][dx]) drawBlock(x + dx, y + dy, color);
+      }
     }
 
-    drawNext();
+    drawNext(nextMinoRef.current);
     drawHold();
 
-    if(isGameOver){
-      stopTimer();
+    ctx.strokeStyle = 'rgba(126,126,126,1)';
+    ctx.lineWidth = 0.7;
+    for (let x = 0; x <= COLS; x++) {
+      ctx.beginPath();
+      ctx.moveTo((LEFT_HOLD_WIDTH + x) * BLOCK_SIZE, 0);
+      ctx.lineTo((LEFT_HOLD_WIDTH + x) * BLOCK_SIZE, ROWS * BLOCK_SIZE);
+      ctx.stroke();
     }
+    for (let y = 0; y <= ROWS; y++) {
+      ctx.beginPath();
+      ctx.moveTo(LEFT_HOLD_WIDTH * BLOCK_SIZE, y * BLOCK_SIZE);
+      ctx.lineTo((LEFT_HOLD_WIDTH + COLS) * BLOCK_SIZE, y * BLOCK_SIZE);
+      ctx.stroke();
+    }
+
+    if (isGameOver) stopTimer();
   }
+
 
   // drop function with locking
   let isLocking = false;
 
-  function drop(){
-    const {x, y, shape} = currentRef.current;
-    if(!collision(x, y+1, shape)){
+  function drop() {
+    const { x, y, shape } = currentRef.current;
+    if (!collision(x, y + 1, shape)) {
       currentRef.current.y++;
-      if(isLocking) {
+      if (isLocking) {
         isLocking = false;
-        if(lockTimerRef.current){
+        if (lockTimerRef.current) {
           clearTimeout(lockTimerRef.current);
           lockTimerRef.current = null;
         }
       }
     } else {
-      if(!isLocking){
+      if (!isLocking) {
         isLocking = true;
-        lockTimerRef.current = setTimeout(()=>{
-          if(collision(currentRef.current.x, currentRef.current.y+1, currentRef.current.shape)){
+        lockTimerRef.current = setTimeout(() => {
+          if (collision(currentRef.current.x, currentRef.current.y + 1, currentRef.current.shape)) {
             merge();
             clearLines();
             newTetromino();
-            if(collision(currentRef.current.x, currentRef.current.y, currentRef.current.shape)){
-              boardRef.current = Array.from({length: ROWS}, () => Array(COLS).fill(0));
+            if (collision(currentRef.current.x, currentRef.current.y, currentRef.current.shape)) {
+              boardRef.current = Array.from({ length: ROWS }, () => Array(COLS).fill(0));
               setIsGameOver(true);
+              isGameOverRef.current = true;
               clearInterval(gameIntervalRef.current);
               stopTimer();
             }
@@ -298,8 +313,8 @@ export default function TetrisGame() {
     draw();
   }
 
-  function hardDrop(){
-    while(!collision(currentRef.current.x, currentRef.current.y+1, currentRef.current.shape)){
+  function hardDrop() {
+    while (!collision(currentRef.current.x, currentRef.current.y + 1, currentRef.current.shape)) {
       currentRef.current.y++;
     }
     merge();
@@ -310,9 +325,9 @@ export default function TetrisGame() {
   }
 
   // Hold functions
-  function hold(){
-    if(currentRef.current.holdUsed) return;
-    if(holdRef.current.shape === null){
+  function hold() {
+    if (currentRef.current.holdUsed) return;
+    if (holdRef.current.shape === null) {
       holdRef.current = {
         shape: currentRef.current.shape,
         color: currentRef.current.color,
@@ -339,7 +354,7 @@ export default function TetrisGame() {
       currentRef.current.index = temp.index;
       currentRef.current.x = 3;
       currentRef.current.y = 0;
-      if(collision(currentRef.current.x, currentRef.current.y, currentRef.current.shape)){
+      if (collision(currentRef.current.x, currentRef.current.y, currentRef.current.shape)) {
         setIsGameOver(true);
         clearInterval(gameIntervalRef.current);
         stopTimer();
@@ -352,103 +367,106 @@ export default function TetrisGame() {
   }
 
   // Draw hold box
-  function drawHold(){
+  function drawHold() {
     const ctx = ctxRef.current;
-    if(!ctx) return;
+    if (!ctx) return;
     const holdX = 1 * BLOCK_SIZE;
     const holdY = 2 * BLOCK_SIZE;
     ctx.strokeStyle = 'white';
     ctx.fillStyle = 'white';
-    ctx.strokeRect(holdX, holdY, 4*BLOCK_SIZE,4*BLOCK_SIZE);
+    ctx.strokeRect(holdX, holdY, 4 * BLOCK_SIZE, 4 * BLOCK_SIZE);
     ctx.font = "bold 14px sans-serif";
     ctx.textAlign = "left";
-    ctx.fillText('HOLD', holdX+4, holdY-8);
-    if(holdRef.current.index === null) return;
+    ctx.fillText('HOLD', holdX + 4, holdY - 8);
+    if (holdRef.current.index === null) return;
 
     const shape = mino[holdRef.current.index];
     const color = COLORS[holdRef.current.index];
-    for(let y=0; y<shape.length; y++){
-      for(let x=0; x<shape[y].length; x++){
-        if(shape[y][x]){
+    for (let y = 0; y < shape.length; y++) {
+      for (let x = 0; x < shape[y].length; x++) {
+        if (shape[y][x]) {
           ctx.fillStyle = color;
-          ctx.fillRect(holdX + x * BLOCK_SIZE, holdY + y * BLOCK_SIZE, BLOCK_SIZE-1, BLOCK_SIZE-1);
+          ctx.fillRect(holdX + x * BLOCK_SIZE, holdY + y * BLOCK_SIZE, BLOCK_SIZE - 1, BLOCK_SIZE - 1);
         }
       }
     }
   }
 
-  // Draw next mino box
-  const [nextMinoData, setNextMinoData] = useState({index:null, shape:null, color:null});
-  function drawNext(){
+  const nextMinoRef = useRef({ index: null, shape: null, color: null });
+
+  function drawNext(nextInfo) {
     const ctx = ctxRef.current;
-    if(!ctx) return;
-    const offsetX = (COLS+7)*BLOCK_SIZE;
-    const offsetY = BLOCK_SIZE + 1*BLOCK_SIZE + 10;
+    if (!ctx) return;
+    const offsetX = (COLS + 7) * BLOCK_SIZE;
+    const offsetY = BLOCK_SIZE + 1 * BLOCK_SIZE + 10;
     ctx.strokeStyle = 'white';
-    ctx.strokeRect(offsetX, offsetY, 4*BLOCK_SIZE,4*BLOCK_SIZE);
+    ctx.strokeRect(offsetX, offsetY, 4 * BLOCK_SIZE, 4 * BLOCK_SIZE);
     ctx.font = "bold 14px sans-serif";
     ctx.fillStyle = 'white';
     ctx.textAlign = "center";
-    ctx.fillText('NEXT', offsetX + 2*BLOCK_SIZE, offsetY -5);
-    if(!nextMinoData.shape) return;
-    for(let y=0; y<nextMinoData.shape.length; y++){
-      for(let x=0; x<nextMinoData.shape[y].length; x++){
-        if(nextMinoData.shape[y][x]){
-          ctx.fillStyle = nextMinoData.color;
-          ctx.fillRect(offsetX + x* BLOCK_SIZE, offsetY + y* BLOCK_SIZE, BLOCK_SIZE-1, BLOCK_SIZE-1);
+    ctx.fillText('NEXT', offsetX + 2 * BLOCK_SIZE, offsetY - 5);
+
+    if (!nextInfo || !nextInfo.shape) return;
+
+    for (let y = 0; y < nextInfo.shape.length; y++) {
+      for (let x = 0; x < nextInfo.shape[y].length; x++) {
+        if (nextInfo.shape[y][x]) {
+          ctx.fillStyle = nextInfo.color;
+          ctx.fillRect(offsetX + x * BLOCK_SIZE, offsetY + y * BLOCK_SIZE, BLOCK_SIZE - 1, BLOCK_SIZE - 1);
         }
       }
     }
   }
 
+
   // Game control functions
-  function startTimer(){
+  function startTimer() {
     startTimestampRef.current = Date.now();
-    if(timerRef.current) clearInterval(timerRef.current);
-    timerRef.current = setInterval(()=>{
-      if(!startTimestampRef.current) return;
-      const elapsed = Math.floor((Date.now() - startTimestampRef.current + pauseElapsedRef.current)/1000);
-      const min = String(Math.floor(elapsed/60)).padStart(2,'0');
-      const sec = String(elapsed%60).padStart(2,'0');
+    if (timerRef.current) clearInterval(timerRef.current);
+    timerRef.current = setInterval(() => {
+      if (!startTimestampRef.current) return;
+      const elapsed = Math.floor((Date.now() - startTimestampRef.current + pauseElapsedRef.current) / 1000);
+      const min = String(Math.floor(elapsed / 60)).padStart(2, '0');
+      const sec = String(elapsed % 60).padStart(2, '0');
       setTimerText(`${min}:${sec}`);
     }, 100);
   }
 
-  function stopTimer(){
-    if(timerRef.current){
+  function stopTimer() {
+    if (timerRef.current) {
       clearInterval(timerRef.current);
       timerRef.current = null;
     }
-    if(startTimestampRef.current){
+    if (startTimestampRef.current) {
       pauseElapsedRef.current += Date.now() - startTimestampRef.current;
     }
     startTimestampRef.current = null;
   }
 
   function gameLoop() {
-  if (isGameOver || isPausedRef.current) return;
-  drop();
-}
+    if (isGameOver || isPausedRef.current) return;
+    drop();
+  }
 
-  useEffect(()=>{
+  useEffect(() => {
     const handleKeyDown = (e) => {
-      if(isPaused || isGameOver || isCleared) return;
+      if (isPaused || isGameOver || isCleared) return;
       const cr = currentRef.current;
       let moved = false;
       let kicks = null;
-      if(cr.index === 0) kicks = SRS_KICKS_I;
-      else if(cr.index !== 1) kicks = SRS_KICKS_OTHERS;
-      let prevX=cr.x, prevY=cr.y, prevRotation=cr.rotation;
+      if (cr.index === 0) kicks = SRS_KICKS_I;
+      else if (cr.index !== 1) kicks = SRS_KICKS_OTHERS;
+      let prevX = cr.x, prevY = cr.y, prevRotation = cr.rotation;
 
-      switch(e.code){
+      switch (e.code) {
         case 'ArrowLeft':
-          if(!collision(cr.x-1, cr.y, cr.shape)){
+          if (!collision(cr.x - 1, cr.y, cr.shape)) {
             cr.x--;
             moved = true;
           }
           break;
         case 'ArrowRight':
-          if(!collision(cr.x+1, cr.y, cr.shape)){
+          if (!collision(cr.x + 1, cr.y, cr.shape)) {
             cr.x++;
             moved = true;
           }
@@ -456,10 +474,10 @@ export default function TetrisGame() {
         case 'ArrowDown':
           drop();
           break;
-        case 'ArrowUp': // Right rotation
-          if(kicks){
+        case 'ArrowUp':
+          if (kicks) {
             const result = SRSRotate(cr.shape, cr.x, cr.y, shape => rotate(shape, cr.index), kicks[cr.rotation]);
-            if(result.success){
+            if (result.success) {
               cr.shape = result.shape;
               cr.x = result.x;
               cr.y = result.y;
@@ -469,9 +487,9 @@ export default function TetrisGame() {
           }
           break;
         case 'KeyZ': // Left rotation
-          if(kicks){
+          if (kicks) {
             const result = SRSRotate(cr.shape, cr.x, cr.y, shape => rotateCCW(shape, cr.index), kicks[cr.rotation]);
-            if(result.success){
+            if (result.success) {
               cr.shape = result.shape;
               cr.x = result.x;
               cr.y = result.y;
@@ -491,9 +509,9 @@ export default function TetrisGame() {
           break;
       }
 
-      if(moved){
-        if(isLocking && collision(cr.x, cr.y+1,cr.shape)){
-          if(lockTimerRef.current){
+      if (moved) {
+        if (isLocking && collision(cr.x, cr.y + 1, cr.shape)) {
+          if (lockTimerRef.current) {
             clearTimeout(lockTimerRef.current);
             lockTimerRef.current = null;
           }
@@ -507,7 +525,7 @@ export default function TetrisGame() {
   }, [isPaused, isGameOver, isCleared]);
 
   // Setup canvas 2d context
-  useEffect(()=>{
+  useEffect(() => {
     const canvas = canvasRef.current;
     canvas.width = (LEFT_HOLD_WIDTH + COLS + 6) * BLOCK_SIZE;
     canvas.height = ROWS * BLOCK_SIZE;
@@ -516,47 +534,61 @@ export default function TetrisGame() {
     return () => {
       stopTimer();
       clearInterval(gameIntervalRef.current);
-      if(lockTimerRef.current) clearTimeout(lockTimerRef.current);
+      if (lockTimerRef.current) clearTimeout(lockTimerRef.current);
     }
   }, []);
 
-  // Start new game
-  function startGame(){
-    boardRef.current = Array.from({length: ROWS}, () => Array(COLS).fill(0));
-    minoQueueRef.current = [];
-    refillQueue();
-    setScore(0);
+  const isGameOverRef = useRef(false);
+  function gameLoop() {
+    if (isGameOverRef.current || isPausedRef.current) return;
+    drop();
+  }
+
+
+  function startGame() {
+    isGameOverRef.current = false;
     setIsGameOver(false);
     setIsCleared(false);
     setIsPaused(false);
+
+    boardRef.current = Array.from({ length: ROWS }, () => Array(COLS).fill(0));
+    minoQueueRef.current = [];
+    refillQueue();
+    setScore(0);
     pauseElapsedRef.current = 0;
+
     startTimer();
     newTetromino();
+    updateNextMino();
     draw();
-    if(gameIntervalRef.current) clearInterval(gameIntervalRef.current);
+
+    if (gameIntervalRef.current) clearInterval(gameIntervalRef.current);
     gameIntervalRef.current = setInterval(gameLoop, dropSpeedRef.current);
   }
 
-    const isPausedRef = useRef(false);
 
-    useEffect(() => {
+
+
+  const isPausedRef = useRef(false);
+
+  useEffect(() => {
     isPausedRef.current = isPaused;
-    }, [isPaused]);
+  }, [isPaused]);
 
   // Pause game
-  function pauseGame(){
+  function pauseGame() {
     setIsPaused(true);
     clearInterval(gameIntervalRef.current);
     stopTimer();
     const ctx = ctxRef.current;
-    if(ctx){
+    if (ctx) {
       ctx.save();
       ctx.fillStyle = "rgba(0,0,0,0.6)";
-      ctx.fillRect(0,0,ctx.canvas.width, ctx.canvas.height);
+      ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
       ctx.fillStyle = "white";
       ctx.font = "bold 28px sans-serif";
       ctx.textAlign = "center";
-      ctx.fillText("停止中", ctx.canvas.width/2, ctx.canvas.height/2);
+      ctx.fillText("停止中", ctx.canvas.width / 2, ctx.canvas.height / 2);
       ctx.restore();
     }
   }
@@ -570,50 +602,62 @@ export default function TetrisGame() {
     draw();
   }
 
+  useEffect(() => {
+  function handleResize() {
+    const baseHeight = ROWS * BLOCK_SIZE + 250; 
+    const scale = Math.min(window.innerHeight / baseHeight, 1);
+    document.documentElement.style.setProperty("--scale", scale);
+  }
+
+  handleResize();
+  window.addEventListener("resize", handleResize);
+  return () => window.removeEventListener("resize", handleResize);
+}, []);
+
 
 
   return (
-  <div id="gameContainer">
-    {isGameOver && <div id="message">GAME OVER</div>}
-    {isCleared && <div id="message2">CONGRATULATIONS!</div>}
-    <div id="score">スコア：{score}</div>
-    <div id="timer">経過時間：{timerText}</div>
-    <canvas ref={canvasRef} id="gameCanvas" />
-    <div className="btn">
-      <div className="click">
-        <div id="resetbtn"onClick={() => {startGame();}}>リセット</div>
-        <div id="stopbtn"onClick={() => {pauseGame();}}>一時停止</div>
-        <div id="startbtn" onClick={() => {resumeGame();}}>スタート</div>
-      </div>
-      <div>
-        スピード：
-        <input
-          type="number"
-          value={dropSpeedRef.current}
-          step="10"
-          onChange={(e) => {
-            let v = parseInt(e.target.value);
-            if (!isNaN(v) && v > 0) dropSpeedRef.current = v;
-            if (gameIntervalRef.current) {
-              clearInterval(gameIntervalRef.current);
-              gameIntervalRef.current = setInterval(gameLoop, dropSpeedRef.current);
-            }
-          }}
-        />
-      </div>
-      <div>
-        クリア条件：
-        <input
-          type="number"
-          value={maxScoreRef.current}
-          step="100"
-          onChange={(e) => {
-            let v = parseInt(e.target.value);
-            if (!isNaN(v) && v > 0) maxScoreRef.current = v;
-          }}
-        />
+    <div id="gameContainer">
+      {isGameOver && <div id="message">GAME OVER</div>}
+      {isCleared && <div id="message2">CONGRATULATIONS!</div>}
+      <div id="score">スコア：{score}</div>
+      <div id="timer">経過時間：{timerText}</div>
+      <canvas ref={canvasRef} id="gameCanvas" />
+      <div className="btn">
+        <div className="click">
+          <div id="resetbtn" onClick={() => { startGame(); }}>リセット</div>
+          <div id="stopbtn" onClick={() => { pauseGame(); }}>一時停止</div>
+          <div id="startbtn" onClick={() => { resumeGame(); }}>スタート</div>
+        </div>
+        <div>
+          スピード：
+          <input
+            type="number"
+            value={dropSpeedRef.current}
+            step="10"
+            onChange={(e) => {
+              let v = parseInt(e.target.value);
+              if (!isNaN(v) && v > 0) dropSpeedRef.current = v;
+              if (gameIntervalRef.current) {
+                clearInterval(gameIntervalRef.current);
+                gameIntervalRef.current = setInterval(gameLoop, dropSpeedRef.current);
+              }
+            }}
+          />
+        </div>
+        <div>
+          クリア条件：
+          <input
+            type="number"
+            value={maxScoreRef.current}
+            step="100"
+            onChange={(e) => {
+              let v = parseInt(e.target.value);
+              if (!isNaN(v) && v > 0) maxScoreRef.current = v;
+            }}
+          />
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
 }

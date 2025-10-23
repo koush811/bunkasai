@@ -1,16 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ROUTERS } from '../url/url';
-import { getVisits } from '../component/visit';
+
 import TetrisGame from '../teto/tetorisu'
 import '../teto/teto.css'
 
 export default function SubPage2() {
-  const [visits, setVisits] = useState(0);
-
-  useEffect(() => {
-    setVisits(getVisits('sub2'));
-  }, []);
+  
 
   return (
     <>
@@ -18,7 +14,7 @@ export default function SubPage2() {
         <Link className="nav-link" to={ROUTERS.MAIN}>MainPageに戻る</Link>
       </div>
       <div className='SubPage-main'>
-        <div className="visit-count">訪問者数: {visits} 人</div>
+        
         <div className='MainContents'>
           <TetrisGame />
         </div>
