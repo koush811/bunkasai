@@ -51,3 +51,28 @@ h1 {
     z-index: 100;
 }
 
+.SubPage-main {
+  display: flex;
+  flex-direction: row; /* ← column を row に変更 */
+  align-items: flex-start;
+  height: 100vh;
+  background-color: #b6b6b6;
+}
+
+/* menuを左側に固定配置 */
+.menu {
+  position: fixed;
+  left: 0;   /* 左端に固定 */
+  top: 60px; /* ヘッダー分だけ下に下げる（調整可） */
+  width: 200px;
+  background-color: #fff;
+  padding: 15px;
+  border-right: 1px solid #ccc;
+  z-index: 101;
+}
+
+/* メインコンテンツ側の余白を確保 */
+.MainContents {
+  margin-left: 60px; /* menu の幅分だけ余白をとる */
+  flex: 1;
+}

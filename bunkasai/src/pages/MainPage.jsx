@@ -46,7 +46,7 @@ export default function MainPage() {
         Reset All
       </button>
 
-      <h1 className="page-title" style={{ textAlign: 'center' }}>Main Page</h1>
+      <h1 className="page-title" style={{ textAlign: 'center' }}>ミニゲーム</h1>
 
       <div className="swiper-outer">
         <Swiper
@@ -62,13 +62,13 @@ export default function MainPage() {
           {/* Slide 1 */}
           <SwiperSlide>
             <div className="slide-content">
-              <h2>Slide 1</h2>
+              <h2>オセロ</h2>
               <div className="visit-count">訪問者数: {visits.sub1} 人</div>
               <button
                 className="nav-btn"
                 onClick={() => handleNavigate('sub1', ROUTERS.SUB1)}
               >
-                紹介ページへ
+                ゲーム画面へ
               </button>
               
             </div>
@@ -77,13 +77,13 @@ export default function MainPage() {
           {/* Slide 2 */}
           <SwiperSlide>
             <div className="slide-content">
-              <h2>Slide 2</h2>
+              <h2>テトリス</h2>
               <div className="visit-count">訪問者数: {visits.sub2} 人</div>
               <button
                 className="nav-btn"
                 onClick={() => handleNavigate('sub2', ROUTERS.SUB2)}
               >
-                紹介ページへ
+                ゲーム画面へ
               </button>
               
             </div>

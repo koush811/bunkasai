@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
-import '../teto/teto.css'
+import '../teto/teto.css';
 
 const COLS = 10;
 const ROWS = 20;
@@ -76,12 +76,16 @@ function rotateCCW(shape, minoIndex) {
 
 export default function TetrisGame() {
   const canvasRef = useRef(null);
+  const ctxRef = useRef(null);
+
   const [score, setScore] = useState(0);
   const [timerText, setTimerText] = useState('00:00');
   const [isGameOver, setIsGameOver] = useState(false);
   const [isCleared, setIsCleared] = useState(false);
-  const [isPaused, setIsPaused] = useState(false);
+  const [isPaused, setIsPaused] = useState(true);
+  const [maxScore, setMaxScore] = useState(4000);
 
+  const maxScoreRef = useRef(maxScore);
   const boardRef = useRef(Array.from({ length: ROWS }, () => Array(COLS).fill(0)));
   const minoQueueRef = useRef([]);
   const currentRef = useRef({
@@ -100,12 +104,29 @@ export default function TetrisGame() {
     index: null,
   });
   const timerRef = useRef(null);
-  const gameIntervalRef = useRef(null);
-  const lockTimerRef = useRef(null);
+const gameIntervalRef = useRef(null);
+const lockTimerRef = useRef(null);
+const startTimestampRef = useRef(null)
   const dropSpeedRef = useRef(400);
-  const maxScoreRef = useRef(4000);
-  const startTimestampRef = useRef(null);
   const pauseElapsedRef = useRef(0);
+  const isPausedRef = useRef(false);
+  const isGameOverRef = useRef(false);
+
+  // Synchronize maxScore state to ref
+  useEffect(() => {
+  maxScoreRef.current = maxScore;
+}, [maxScore]);
+  // Check clear condition on score change
+  useEffect(() => {
+  if (score >= maxScoreRef.current) {
+    clearInterval(gameIntervalRef.current);
+    setIsCleared(true);
+    stopTimer();
+    draw();
+  }
+}, [score]);
+
+  // Utility functions
 
   function shuffle(array) {
     for (let i = array.length - 1; i > 0; i--) {
@@ -132,7 +153,6 @@ export default function TetrisGame() {
     draw();
   }
 
-
   function newTetromino() {
     if (minoQueueRef.current.length === 0) refillQueue();
     const idx = minoQueueRef.current.shift();
@@ -148,6 +168,7 @@ export default function TetrisGame() {
       stopTimer();
     }
   }
+
   function collision(nx, ny, shape) {
     const b = boardRef.current;
     for (let y = 0; y < shape.length; y++) {
@@ -162,7 +183,6 @@ export default function TetrisGame() {
     return false;
   }
 
-  // Merge current mino into board
   function merge() {
     const b = boardRef.current;
     const { shape, color, x, y } = currentRef.current;
@@ -190,10 +210,8 @@ export default function TetrisGame() {
     }
     if (linesCleared > 0) {
       updateScore(linesCleared * 100);
-      checkClear();
     }
   }
-
 
   function checkClear() {
     if (score >= maxScoreRef.current) {
@@ -204,14 +222,8 @@ export default function TetrisGame() {
   }
 
   function updateScore(add) {
-    setScore(s => {
-      const ns = s + add;
-      if (ns >= maxScoreRef.current) checkClear();
-      return ns;
-    });
+  setScore(s => s + add);
   }
-
-  // Rotation with SRS kicks
   function SRSRotate(shape, x, y, rotateFunc, kicks) {
     const rotated = rotateFunc(shape);
     for (let i = 0; i < kicks.length; i++) {
@@ -222,9 +234,6 @@ export default function TetrisGame() {
     }
     return { success: false, shape, x, y };
   }
-
-  // Draw functions
-  const ctxRef = useRef(null);
 
   function drawBlock(x, y, color) {
     const ctx = ctxRef.current;
@@ -273,8 +282,6 @@ export default function TetrisGame() {
     if (isGameOver) stopTimer();
   }
 
-
-  // drop function with locking
   let isLocking = false;
 
   function drop() {
@@ -324,7 +331,6 @@ export default function TetrisGame() {
     isLocking = false;
   }
 
-  // Hold functions
   function hold() {
     if (currentRef.current.holdUsed) return;
     if (holdRef.current.shape === null) {
@@ -366,7 +372,6 @@ export default function TetrisGame() {
     draw();
   }
 
-  // Draw hold box
   function drawHold() {
     const ctx = ctxRef.current;
     if (!ctx) return;
@@ -418,8 +423,6 @@ export default function TetrisGame() {
     }
   }
 
-
-  // Game control functions
   function startTimer() {
     startTimestampRef.current = Date.now();
     if (timerRef.current) clearInterval(timerRef.current);
@@ -444,7 +447,7 @@ export default function TetrisGame() {
   }
 
   function gameLoop() {
-    if (isGameOver || isPausedRef.current) return;
+    if (isGameOverRef.current || isPausedRef.current) return;
     drop();
   }
 
@@ -456,7 +459,6 @@ export default function TetrisGame() {
       let kicks = null;
       if (cr.index === 0) kicks = SRS_KICKS_I;
       else if (cr.index !== 1) kicks = SRS_KICKS_OTHERS;
-      let prevX = cr.x, prevY = cr.y, prevRotation = cr.rotation;
 
       switch (e.code) {
         case 'ArrowLeft':
@@ -486,7 +488,7 @@ export default function TetrisGame() {
             }
           }
           break;
-        case 'KeyZ': // Left rotation
+        case 'KeyZ':
           if (kicks) {
             const result = SRSRotate(cr.shape, cr.x, cr.y, shape => rotateCCW(shape, cr.index), kicks[cr.rotation]);
             if (result.success) {
@@ -524,32 +526,26 @@ export default function TetrisGame() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isPaused, isGameOver, isCleared]);
 
-  // Setup canvas 2d context
   useEffect(() => {
     const canvas = canvasRef.current;
     canvas.width = (LEFT_HOLD_WIDTH + COLS + 6) * BLOCK_SIZE;
     canvas.height = ROWS * BLOCK_SIZE;
     ctxRef.current = canvas.getContext('2d');
-    startGame();
+    startGame(true); // start in paused state
     return () => {
       stopTimer();
       clearInterval(gameIntervalRef.current);
       if (lockTimerRef.current) clearTimeout(lockTimerRef.current);
-    }
+    };
   }, []);
 
-  const isGameOverRef = useRef(false);
-  function gameLoop() {
-    if (isGameOverRef.current || isPausedRef.current) return;
-    drop();
-  }
-
-
-  function startGame() {
+  function startGame(paused = true) {
+    maxScoreRef.current = maxScore;  // Synchronize maxScore ref here
     isGameOverRef.current = false;
     setIsGameOver(false);
     setIsCleared(false);
-    setIsPaused(false);
+    setIsPaused(paused);
+    isPausedRef.current = paused;
 
     boardRef.current = Array.from({ length: ROWS }, () => Array(COLS).fill(0));
     minoQueueRef.current = [];
@@ -562,57 +558,42 @@ export default function TetrisGame() {
     updateNextMino();
     draw();
 
-    if (gameIntervalRef.current) clearInterval(gameIntervalRef.current);
-    gameIntervalRef.current = setInterval(gameLoop, dropSpeedRef.current);
-  }
-
-
-
-
-  const isPausedRef = useRef(false);
-
-  useEffect(() => {
-    isPausedRef.current = isPaused;
-  }, [isPaused]);
-
-  // Pause game
-  function pauseGame() {
-    setIsPaused(true);
-    clearInterval(gameIntervalRef.current);
-    stopTimer();
-    const ctx = ctxRef.current;
-    if (ctx) {
-      ctx.save();
-      ctx.fillStyle = "rgba(0,0,0,0.6)";
-      ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-      ctx.fillStyle = "white";
-      ctx.font = "bold 28px sans-serif";
-      ctx.textAlign = "center";
-      ctx.fillText("停止中", ctx.canvas.width / 2, ctx.canvas.height / 2);
-      ctx.restore();
+    if (!paused) {
+      if (gameIntervalRef.current) clearInterval(gameIntervalRef.current);
+      gameIntervalRef.current = setInterval(gameLoop, dropSpeedRef.current);
+    } else {
+      const ctx = ctxRef.current;
+      if (ctx) {
+        ctx.save();
+        ctx.fillStyle = "rgba(0, 0, 0, 0.6)";
+        ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+        ctx.fillStyle = "white";
+        ctx.font = "bold 28px sans-serif";
+        ctx.textAlign = "center";
+        ctx.fillText("停止中", ctx.canvas.width / 2, ctx.canvas.height / 2);
+        ctx.fillText("スタートボタンで再開", ctx.canvas.width / 2, ctx.canvas.height / 2 + 40);
+        ctx.restore();
+      }
     }
   }
 
-  function resumeGame() {
-    if (!isPausedRef.current || isGameOver) return;
-    setIsPaused(false);
-    if (gameIntervalRef.current) clearInterval(gameIntervalRef.current);
-    gameIntervalRef.current = setInterval(gameLoop, dropSpeedRef.current);
-    startTimer();
-    draw();
-  }
+  function pauseGame() {
+  setIsPaused(true);
+  isPausedRef.current = true; // これを追加
+  clearInterval(gameIntervalRef.current);
+  stopTimer();
+}
 
-  useEffect(() => {
-  function handleResize() {
-    const baseHeight = ROWS * BLOCK_SIZE + 250; 
-    const scale = Math.min(window.innerHeight / baseHeight, 1);
-    document.documentElement.style.setProperty("--scale", scale);
-  }
 
-  handleResize();
-  window.addEventListener("resize", handleResize);
-  return () => window.removeEventListener("resize", handleResize);
-}, []);
+function resumeGame() {
+  if (!isPausedRef.current || isGameOver) return;
+  setIsPaused(false);
+  isPausedRef.current = false; // これを追加
+  if (gameIntervalRef.current) clearInterval(gameIntervalRef.current);
+  gameIntervalRef.current = setInterval(gameLoop, dropSpeedRef.current);
+  startTimer();
+  draw();
+}
 
 
 
@@ -625,35 +606,22 @@ export default function TetrisGame() {
       <canvas ref={canvasRef} id="gameCanvas" />
       <div className="btn">
         <div className="click">
-          <div id="resetbtn" onClick={() => { startGame(); }}>リセット</div>
+          <div id="resetbtn" onClick={() => { startGame(true); }}>リセット</div>
           <div id="stopbtn" onClick={() => { pauseGame(); }}>一時停止</div>
           <div id="startbtn" onClick={() => { resumeGame(); }}>スタート</div>
-        </div>
-        <div>
-          スピード：
-          <input
-            type="number"
-            value={dropSpeedRef.current}
-            step="10"
-            onChange={(e) => {
-              let v = parseInt(e.target.value);
-              if (!isNaN(v) && v > 0) dropSpeedRef.current = v;
-              if (gameIntervalRef.current) {
-                clearInterval(gameIntervalRef.current);
-                gameIntervalRef.current = setInterval(gameLoop, dropSpeedRef.current);
-              }
-            }}
-          />
         </div>
         <div>
           クリア条件：
           <input
             type="number"
-            value={maxScoreRef.current}
+            value={maxScore}
             step="100"
             onChange={(e) => {
-              let v = parseInt(e.target.value);
-              if (!isNaN(v) && v > 0) maxScoreRef.current = v;
+              const v = parseInt(e.target.value);
+              if (!isNaN(v) && v > 0) {
+                setMaxScore(v);
+                maxScoreRef.current = v;
+              }
             }}
           />
         </div>
