@@ -27,6 +27,7 @@ export default function SubPage2() {
           <div>Zキー：逆回転</div>
           <div>Shiftキー</div>
           <div>Spaceキー：ハードドロップ</div>
+          <div>リセットボタンが壊れているのでF5キーを押してください</div>
         </div>
       </div>
     </>

@@ -540,42 +540,58 @@ const startTimestampRef = useRef(null)
   }, []);
 
   function startGame(paused = true) {
-    maxScoreRef.current = maxScore;  // Synchronize maxScore ref here
-    isGameOverRef.current = false;
-    setIsGameOver(false);
-    setIsCleared(false);
-    setIsPaused(paused);
-    isPausedRef.current = paused;
+  maxScoreRef.current = maxScore;
+  isGameOverRef.current = false;
+  setIsGameOver(false);
+  setIsCleared(false);
+  setIsPaused(paused);
+  isPausedRef.current = paused;
 
-    boardRef.current = Array.from({ length: ROWS }, () => Array(COLS).fill(0));
-    minoQueueRef.current = [];
-    refillQueue();
-    setScore(0);
-    pauseElapsedRef.current = 0;
+  boardRef.current = Array.from({ length: ROWS }, () => Array(COLS).fill(0));
+  minoQueueRef.current = [];
+  refillQueue();
+  setScore(0);
+  pauseElapsedRef.current = 0;
 
-    startTimer();
-    newTetromino();
-    updateNextMino();
-    draw();
+  // **ホールドを初期化**
+  holdRef.current = {
+    shape: null,
+    color: null,
+    rotation: 0,
+    index: null,
+  };
 
-    if (!paused) {
-      if (gameIntervalRef.current) clearInterval(gameIntervalRef.current);
-      gameIntervalRef.current = setInterval(gameLoop, dropSpeedRef.current);
-    } else {
-      const ctx = ctxRef.current;
-      if (ctx) {
-        ctx.save();
-        ctx.fillStyle = "rgba(0, 0, 0, 0.6)";
-        ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-        ctx.fillStyle = "white";
-        ctx.font = "bold 28px sans-serif";
-        ctx.textAlign = "center";
-        ctx.fillText("停止中", ctx.canvas.width / 2, ctx.canvas.height / 2);
-        ctx.fillText("スタートボタンで再開", ctx.canvas.width / 2, ctx.canvas.height / 2 + 40);
-        ctx.restore();
-      }
+  // **次ミノも初期化**
+  nextMinoRef.current = {
+    shape: null,
+    color: null,
+    index: null,
+  };
+
+  startTimer();
+  newTetromino();
+  updateNextMino();
+  draw();
+
+  if (!paused) {
+    if (gameIntervalRef.current) clearInterval(gameIntervalRef.current);
+    gameIntervalRef.current = setInterval(gameLoop, dropSpeedRef.current);
+  } else {
+    const ctx = ctxRef.current;
+    if (ctx) {
+      ctx.save();
+      ctx.fillStyle = "rgba(0, 0, 0, 0.6)";
+      ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+      ctx.fillStyle = "white";
+      ctx.font = "bold 28px sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText("停止中", ctx.canvas.width / 2, ctx.canvas.height / 2);
+      ctx.fillText("スタートボタンで再開", ctx.canvas.width / 2, ctx.canvas.height / 2 + 40);
+      ctx.restore();
     }
   }
+}
+
 
   function pauseGame() {
   setIsPaused(true);
@@ -606,7 +622,7 @@ function resumeGame() {
       <canvas ref={canvasRef} id="gameCanvas" />
       <div className="btn">
         <div className="click">
-          <div id="resetbtn" onClick={() => { startGame(true); }}>リセット</div>
+          <div id="resetbtn" onClick={() => { startGame(true); }} >リセット</div>
           <div id="stopbtn" onClick={() => { pauseGame(); }}>一時停止</div>
           <div id="startbtn" onClick={() => { resumeGame(); }}>スタート</div>
         </div>
